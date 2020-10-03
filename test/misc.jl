@@ -714,9 +714,9 @@ end
 
 @kwdef struct TestInnerConstructor
     a = 1
-    TestInnerConstructor(a::Int) = (@assert a>0; new(a))
+    TestInnerConstructor(a::Int) = (a>0 || error(); new(a))
     function TestInnerConstructor(a::String)
-        @assert length(a) > 0
+        length(a) > 0 || error()
         new(a)
     end
 end
@@ -724,9 +724,9 @@ end
 @testset "@kwdef inner constructor" begin
     @test TestInnerConstructor() == TestInnerConstructor(1)
     @test TestInnerConstructor(a=2) == TestInnerConstructor(2)
-    @test_throws AssertionError TestInnerConstructor(a=0)
+    @test_throws ErrorException TestInnerConstructor(a=0)
     @test TestInnerConstructor(a="2") == TestInnerConstructor("2")
-    @test_throws AssertionError TestInnerConstructor(a="")
+    @test_throws ErrorException TestInnerConstructor(a="")
 end
 
 const outsidevar = 7
@@ -763,7 +763,7 @@ end
 
 @testset "Pointer to unsigned/signed integer" begin
     # assuming UInt and Ptr have the same size
-    @assert sizeof(UInt) == sizeof(Ptr{Nothing})
+    @test sizeof(UInt) == sizeof(Ptr{Nothing})
     uint = UInt(0x12345678)
     sint = signed(uint)
     ptr = reinterpret(Ptr{Nothing}, uint)

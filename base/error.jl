@@ -183,7 +183,17 @@ windowserror(p, b::Bool; extrainfo=nothing) = b ? windowserror(p, extrainfo=extr
 windowserror(p, code::UInt32=Libc.GetLastError(); extrainfo=nothing) = throw(Main.Base.SystemError(string(p), 0, WindowsErrorInfo(code, extrainfo)))
 
 
-## assertion macro ##
+## assertion and ifdebug macros ##
+
+"""
+    @ifdebug expr
+
+Equivalent to `@static if isdebug()`
+"""
+macro ifdebug(expr)
+    isdefined(@__MODULE__, :isdebug) && !(isdebug()) && return nothing
+    return :(esc(expr))
+end
 
 
 """
