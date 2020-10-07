@@ -1710,6 +1710,8 @@ end
     @test str == "hi+1-2-3-4-5-6-7-8-9-10-11-12-13-14-15-1.1-2.2-3.3-4.4-5.5-6.6-7.7-8.8-9.9\n"
 end
 
+
+Sys.iswindows() || run(`locale`)
 @testset "Cwstring" begin
     n = 100
     buffer = Array{Cwchar_t}(undef, n)
