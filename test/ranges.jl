@@ -100,7 +100,7 @@ end
     #     end
     # end
 
-    for T in (Float16, Float32) # skip Float64 (bit representation of BigFloat is not available)
+    for T in (Float32,) # skip Float64 (bit representation of BigFloat is not available)
         for i = 1:10^5
             x, y = rand(T), rand(T)
             highprec_pair(x, y)
