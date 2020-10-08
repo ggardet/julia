@@ -760,8 +760,10 @@ function sinpi(x::T) where T<:AbstractFloat
 
     # reduce to interval [-1,1]
     # assumes RoundNearest rounding mode
-    t = 3*s
-    rx = x-((x+t)-t) # zeros may be incorrectly signed
+    T′ = intermediate_floattype(T)
+    s′ = maxintfloat(T′)/2
+    t = 3*s′
+    rx = T(x-((x+t)-t)) # zeros may be incorrectly signed
     arx = abs(rx)
 
     if (arx == 0) | (arx == 1)
@@ -823,15 +825,18 @@ function cospi(x::T) where T<:AbstractFloat
 
     # reduce to interval [-1,1], then [0,1]
     # assumes RoundNearest rounding mode
-    rx = abs(ax-((ax+s)-s))
+    T′ = intermediate_floattype(T)
+    s′ = maxintfloat(T′)
+    rx = T(ax-((ax+s′)-s′))
+    arx = abs(rx)
 
-    if rx <= 0.25
-        cos_kernel(mulpi_ext(rx))
-    elseif rx < 0.75
-        y = mulpi_ext(T(0.5) - rx)
+    if arx <= 0.25
+        cos_kernel(mulpi_ext(arx))
+    elseif arx < 0.75
+        y = mulpi_ext(T(0.5) - arx)
         sin_kernel(y)
     else
-        y = mulpi_ext(one(T) - rx)
+        y = mulpi_ext(one(T) - arx)
         -cos_kernel(y)
     end
 end
@@ -880,8 +885,10 @@ function sincospi(x::T) where T<:AbstractFloat
 
     # reduce to interval [-1,1]
     # assumes RoundNearest rounding mode
-    t = 3*(s/2)
-    rx = x-((x+t)-t) # zeros may be incorrectly signed
+    T′ = intermediate_floattype(T)
+    s′ = maxintfloat(T′)
+    t = 3*(s′/2)
+    rx = T(x-((x+t)-t)) # zeros may be incorrectly signed
     arx = abs(rx)
 
     # same selection scheme as sinpi and cospi

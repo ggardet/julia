@@ -787,3 +787,8 @@ float(r::StepRangeLen{T}) where {T} =
 function float(r::LinRange)
     LinRange(float(r.start), float(r.stop), length(r))
 end
+
+# some floating point types are regularly represented using extended precision.
+# this breaks computations that rely on the precise definition of IEEE floating point.
+intermediate_floattype(::Type{T}) where {T<:AbstractFloat} = T
+intermediate_floattype(::Type{Float16}) = Float32
