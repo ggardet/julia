@@ -100,6 +100,9 @@ for t1 in (Float16, Float32, Float64)
     end
 end
 
+# TODO: deprecate in 2.0
+Float16(x::Integer) = convert(Float16, convert(Float32, x)::Float32)
+
 Bool(x::Real) = x==0 ? false : x==1 ? true : throw(InexactError(:Bool, Bool, x))
 
 promote_rule(::Type{Float64}, ::Type{UInt128}) = Float64
